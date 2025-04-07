@@ -4,6 +4,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.potion.PotionEffect;
 
@@ -30,27 +31,39 @@ public class DrugRegistry {
         drugProfiles.clear();
 
         for (String key : config.getKeys(false)) {
+            Bukkit.getLogger().info("[DrugsV2] Loading drug config: " + key);
+
             ConfigurationSection section = config.getConfigurationSection(key);
-            if (section == null) continue;
+            if (section == null) {
+                Bukkit.getLogger().warning("[DrugsV2] Skipping '" + key + "': config section is null.");
+                continue;
+            }
 
-            // Parse drug profile
-            String name = key;
-            Material material = Material.valueOf(section.getString("material", "SUGAR").toUpperCase());
-            String displayName = section.getString("display-name", "&fUnknown Drug");
-            List<String> lore = section.getStringList("lore");
-            List<PotionEffect> effects = EffectUtils.parsePotionEffects(section.getConfigurationSection("effects"));
+            try {
+                String name = key;
+                Material material = Material.valueOf(section.getString("material", "SUGAR").toUpperCase());
+                String displayName = section.getString("display-name", "&fUnknown Drug");
+                List<String> lore = section.getStringList("lore");
+                List<PotionEffect> effects = EffectUtils.parsePotionEffects(section.getConfigurationSection("effects"));
 
-            DrugEffectProfile profile = new DrugEffectProfile(name, effects, material, displayName, lore);
-            drugProfiles.put(key.toLowerCase(), profile);
+                DrugEffectProfile profile = new DrugEffectProfile(name, effects, material, displayName, lore);
+                drugProfiles.put(key.toLowerCase(), profile);
+                Bukkit.getLogger().info("[DrugsV2] Registered drug: " + key);
 
-            // Register crafting recipe if it exists in recipes.yml
-            if (recipes != null) {
-                ConfigurationSection recipeSection = recipes.getConfigurationSection(key);
-                if (recipeSection != null) {
-                    Bukkit.getLogger().info("[DrugsV2] Attempting to register recipe for: " + key);
-                    DrugRecipeHelper.registerDrugRecipe(key, recipeSection, plugin);
-                    Bukkit.getLogger().info("[DrugsV2] Successfully registered recipe: " + key);
+                // Register crafting recipe if it exists
+                if (recipes != null) {
+                    ConfigurationSection recipeSection = recipes.getConfigurationSection(key);
+                    if (recipeSection != null) {
+                        Bukkit.getLogger().info("[DrugsV2] Registering recipe for: " + key);
+                        DrugRecipeHelper.registerDrugRecipe(key, recipeSection, plugin);
+                    } else {
+                        Bukkit.getLogger().warning("[DrugsV2] No recipe found for: " + key);
+                    }
                 }
+
+            } catch (Exception e) {
+                Bukkit.getLogger().severe("[DrugsV2] Failed to load drug '" + key + "': " + e.getMessage());
+                e.printStackTrace();
             }
         }
     }
@@ -63,9 +76,18 @@ public class DrugRegistry {
     }
 
     /**
+     * Creates a drug item with specified amount.
+     */
+    public static ItemStack getDrugItem(String id, int amount) {
+        DrugEffectProfile profile = getProfileById(id);
+        if (profile == null) return null;
+        return profile.createItem(amount);
+    }
+
+    /**
      * Tries to match a held item to a known drug.
      */
-    public static DrugEffectProfile getProfileFromItem(org.bukkit.inventory.ItemStack item) {
+    public static DrugEffectProfile getProfileFromItem(ItemStack item) {
         for (DrugEffectProfile profile : drugProfiles.values()) {
             if (profile.matches(item)) return profile;
         }

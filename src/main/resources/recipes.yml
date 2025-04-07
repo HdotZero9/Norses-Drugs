@@ -8,3 +8,14 @@ heroin:
     G: GUNPOWDER
     A: APPLE
     B: BONE
+
+henbane:
+  shape:
+    - " F "
+    - "GSG"
+    - " B "
+  ingredients:
+    F: RABBIT_FOOT
+    G: GUNPOWDER
+    S: SUGAR
+    B: BONE

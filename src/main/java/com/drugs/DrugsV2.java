@@ -1,34 +1,43 @@
 package com.drugs;
 
-import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
  * Main plugin class for DrugsV2.
- * Handles loading configs, initializing systems, and registering commands/listeners.
  */
 public class DrugsV2 extends JavaPlugin {
 
     private static DrugsV2 instance;
+    private FileConfiguration recipesConfig;
+    private File recipesFile;
+
+    public static DrugsV2 getInstance() {
+        return instance;
+    }
 
     @Override
     public void onEnable() {
         instance = this;
 
-        // Save configs if missing
+        // Save default configs
         saveDefaultConfig();
-        saveResource("recipes.yml", false);
+        saveRecipesConfig();
 
-        // Load all drugs
+        // Initialize all core systems
         DrugRegistry.init(this);
 
         // Register event listeners
-        Bukkit.getPluginManager().registerEvents(new DrugUseListener(), this);
-        Bukkit.getPluginManager().registerEvents(new DrugMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new DrugMenuListener(), this);
+        getServer().getPluginManager().registerEvents(new DrugUseListener(), this);
 
-        // Register /drugs command
+        // Register commands + tab completion
         getCommand("drugs").setExecutor(new DrugsCommand());
+        getCommand("drugs").setTabCompleter(new DrugsTabCompleter());
 
         getLogger().info("DrugsV2 enabled!");
     }
@@ -38,11 +47,23 @@ public class DrugsV2 extends JavaPlugin {
         getLogger().info("DrugsV2 disabled.");
     }
 
-    public static DrugsV2 getInstance() {
-        return instance;
+    /**
+     * Loads or creates recipes.yml.
+     */
+    public void saveRecipesConfig() {
+        if (recipesFile == null) {
+            recipesFile = new File(getDataFolder(), "recipes.yml");
+        }
+        if (!recipesFile.exists()) {
+            saveResource("recipes.yml", false);
+        }
+        recipesConfig = YamlConfiguration.loadConfiguration(recipesFile);
     }
 
+    /**
+     * Accessor for recipes.yml data.
+     */
     public FileConfiguration getRecipesConfig() {
-        return YamlFileLoader.load("recipes.yml", this);
+        return recipesConfig;
     }
 }

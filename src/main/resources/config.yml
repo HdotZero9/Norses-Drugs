@@ -6,8 +6,25 @@ heroin:
     - "&7Not recommended for daily use."
   effects:
     STRENGTH:
-      duration: 600  # 30 seconds (20 ticks per second)
-      amplifier: 1   # Strength II
+      duration: 600
+      amplifier: 1
     SPEED:
-      duration: 2400 # 2 minutes
-      amplifier: 1   # Speed II
+      duration: 2400
+      amplifier: 1
+
+henbane:
+  material: RABBIT_FOOT
+  display-name: "&4Henbane"
+  lore:
+    - "&7An ancient herb of the wild."
+    - "&7Fuels blind fury."
+  effects:
+    STRENGTH:
+      duration: 600
+      amplifier: 2
+    SPEED:
+      duration: 300
+      amplifier: 2
+    BLINDNESS:
+      duration: 300
+      amplifier: 0
