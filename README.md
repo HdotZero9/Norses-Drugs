@@ -58,6 +58,7 @@ Unlocks include chat messages, sounds, and fireworks for a satisfying reward!
 | `drugs.admin.reload` | Use /drugs reload |
 | `drugs.admin.purge` | Use /drugs purge |
 | `drugs.admin.list` | Use /drugs list |
+| `drugs.achievements` | Use /drugs achievements |
 
 ## ⚙️ Configuration
 Edit the files in `/plugins/DrugsV2/`:
