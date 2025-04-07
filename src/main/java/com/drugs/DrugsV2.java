@@ -24,20 +24,28 @@ public class DrugsV2 extends JavaPlugin {
     public void onEnable() {
         instance = this;
 
-        // Save default configs
+        // Load default configs
         saveDefaultConfig();
         saveRecipesConfig();
+        saveToleranceConfig();
 
-        // Initialize all core systems
+        // Load tolerance settings
+        ToleranceConfigLoader.load(getDataFolder());
+
+        // Initialize core drug system
         DrugRegistry.init(this);
 
-        // Register event listeners
+        // Start tolerance decay
+        ToleranceTracker.startDecayTask();
+
+        // Register events
         getServer().getPluginManager().registerEvents(new DrugMenuListener(), this);
         getServer().getPluginManager().registerEvents(new DrugUseListener(), this);
 
-        // Register commands + tab completion
+        // Register commands
         getCommand("drugs").setExecutor(new DrugsCommand());
         getCommand("drugs").setTabCompleter(new DrugsTabCompleter());
+        getCommand("tolerance").setExecutor(new ToleranceCommand());
 
         getLogger().info("DrugsV2 enabled!");
     }
@@ -47,9 +55,6 @@ public class DrugsV2 extends JavaPlugin {
         getLogger().info("DrugsV2 disabled.");
     }
 
-    /**
-     * Loads or creates recipes.yml.
-     */
     public void saveRecipesConfig() {
         if (recipesFile == null) {
             recipesFile = new File(getDataFolder(), "recipes.yml");
@@ -60,9 +65,13 @@ public class DrugsV2 extends JavaPlugin {
         recipesConfig = YamlConfiguration.loadConfiguration(recipesFile);
     }
 
-    /**
-     * Accessor for recipes.yml data.
-     */
+    public void saveToleranceConfig() {
+        File file = new File(getDataFolder(), "tolerance.yml");
+        if (!file.exists()) {
+            saveResource("tolerance.yml", false);
+        }
+    }
+
     public FileConfiguration getRecipesConfig() {
         return recipesConfig;
     }

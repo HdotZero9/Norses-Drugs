@@ -9,6 +9,11 @@ commands:
     usage: /drugs [give <player> <drugId> [amount]]
     permission: drugs.menu
 
+  tolerance:
+    description: View your current drug tolerance levels
+    usage: /tolerance
+    permission: drugs.tolerance
+
 permissions:
   drugs.menu:
     description: Allows access to the drug menu
@@ -17,3 +22,7 @@ permissions:
   drugs.give:
     description: Allows giving drugs to players via /drugs give
     default: op
+
+  drugs.tolerance:
+    description: Allows using /tolerance
+    default: true
