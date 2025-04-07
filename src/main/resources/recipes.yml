@@ -1,0 +1,10 @@
+heroin:
+  shape:
+    - " S "
+    - "GAG"
+    - " B "
+  ingredients:
+    S: SUGAR
+    G: GUNPOWDER
+    A: APPLE
+    B: BONE

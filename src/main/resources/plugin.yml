@@ -1,0 +1,13 @@
+name: DrugsV2
+version: '1.0'
+main: com.drugs.DrugsV2
+api-version: '1.21'
+commands:
+  drugs:
+    description: Opens the drug selection GUI
+    usage: /drugs
+    permission: drugs.menu
+permissions:
+  drugs.menu:
+    description: Allows access to the drug menu
+    default: true

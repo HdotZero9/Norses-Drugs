@@ -1,0 +1,13 @@
+heroin:
+  material: END_CRYSTAL
+  display-name: "&cHeroin"
+  lore:
+    - "&7A high-risk, high-reward combat enhancer."
+    - "&7Not recommended for daily use."
+  effects:
+    STRENGTH:
+      duration: 600  # 30 seconds (20 ticks per second)
+      amplifier: 1   # Strength II
+    SPEED:
+      duration: 2400 # 2 minutes
+      amplifier: 1   # Speed II
