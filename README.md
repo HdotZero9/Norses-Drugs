@@ -10,6 +10,7 @@ Norse's Drugs is a powerful, modular Minecraft plugin that adds craftable, confi
 - GUI for browsing and previewing all drugs
 - Admin tools: reload configs, purge players tolerances, list drugs
 - Add your own drugs in seconds!
+- Unlockable achievements via `/drugs achievements`
 
 ## 🧪 Default Drugs Included
 - **Heroin** – Strength & Speed
@@ -22,6 +23,18 @@ Norse's Drugs is a powerful, modular Minecraft plugin that adds craftable, confi
 - **Cryozen** – Tanky, icy resistance
 - **Shadowspike** – Invisibility & escape tool
 
+## 🏆 Achievements
+
+Players can unlock progress-based achievements by using drugs in specific ways. Use `/drugs achievements` to track them!
+
+- **First Dose** – Use your first drug
+- **Chem Connoisseur** – Try every drug at least once
+- **Risky Business** – Use a drug while at max tolerance
+- **I Can Stop Anytime** – Reach max tolerance on 3 different drugs
+- **Clean Slate** – Let a maxed drug's tolerance decay all the way back to 0
+
+Unlocks include chat messages, sounds, and fireworks for a satisfying reward!
+
 ## 📦 Commands
 
 | Command | Description |
@@ -33,6 +46,7 @@ Norse's Drugs is a powerful, modular Minecraft plugin that adds craftable, confi
 | `/drugs reload` | Reloads all configs |
 | `/drugs list` | Lists all loaded drugs |
 | `/tolerance` | View your own tolerance levels |
+| `/drugs achievements` | View your personal achievement progress |
 
 ## 🔐 Permissions
 
