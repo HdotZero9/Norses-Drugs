@@ -12,6 +12,125 @@ heroin:
       duration: 2400
       amplifier: 1
 
+opium:
+  material: POPPY
+  display-name: "&6Opium"
+  lore:
+    - "&7A potent relaxant from ancient blooms."
+    - "&7Feels good. Slows everything down."
+  effects:
+    RESISTANCE:
+      duration: 400
+      amplifier: 0
+    SLOW:
+      duration: 400
+      amplifier: 0
+    REGENERATION:
+      duration: 200
+      amplifier: 0
+
+fent:
+  material: GHAST_TEAR
+  display-name: "&5Fent"
+  lore:
+    - "&7Hyper-potent painkiller."
+    - "&7One hit is all it takes..."
+  effects:
+    STRENGTH:
+      duration: 200
+      amplifier: 1
+    SPEED:
+      duration: 200
+      amplifier: 1
+    ABSORPTION:
+      duration: 100
+      amplifier: 0
+
+morphine:
+  material: FERMENTED_SPIDER_EYE
+  display-name: "&eMorphine"
+  lore:
+    - "&7Smooths out the pain."
+    - "&7Heals, but slows you down."
+  effects:
+    REGENERATION:
+      duration: 400
+      amplifier: 1
+    RESISTANCE:
+      duration: 400
+      amplifier: 0
+    SLOW:
+      duration: 200
+      amplifier: 1
+
+shroomshake:
+  material: RED_MUSHROOM
+  display-name: "&dShroomshake"
+  lore:
+    - "&7A vibrant mix of spore-born madness."
+    - "&7Everything is... squishy?"
+  effects:
+    JUMP:
+      duration: 400
+      amplifier: 1
+    LUCK:
+      duration: 1200
+      amplifier: 0
+    CONFUSION:
+      duration: 200
+      amplifier: 0
+
+blue_crystal:
+  material: LAPIS_LAZULI
+  display-name: "&9Blue Crystal"
+  lore:
+    - "&7High octane. High voltage."
+    - "&7Cooked in the back of an RV."
+  effects:
+    SPEED:
+      duration: 300
+      amplifier: 2
+    HASTE:
+      duration: 300
+      amplifier: 1
+    WEAKNESS:
+      duration: 400
+      amplifier: 0
+
+cryozen:
+  material: BLUE_ICE
+  display-name: "&bCryozen"
+  lore:
+    - "&7Cools the nerves. And the muscles."
+    - "&7You're a tank. Temporarily."
+  effects:
+    RESISTANCE:
+      duration: 400
+      amplifier: 1
+    FIRE_RESISTANCE:
+      duration: 600
+      amplifier: 0
+    SLOW:
+      duration: 400
+      amplifier: 0
+
+shadowspike:
+  material: INK_SAC
+  display-name: "&8Shadowspike"
+  lore:
+    - "&7Disappear. Strike. Fade again."
+    - "&7A rogue’s companion."
+  effects:
+    INVISIBILITY:
+      duration: 400
+      amplifier: 0
+    SPEED:
+      duration: 400
+      amplifier: 0
+    WEAKNESS:
+      duration: 400
+      amplifier: 0
+
 henbane:
   material: RABBIT_FOOT
   display-name: "&4Henbane"
@@ -20,11 +139,11 @@ henbane:
     - "&7Fuels blind fury."
   effects:
     STRENGTH:
-      duration: 600
-      amplifier: 2
+      duration: 600    # 30s
+      amplifier: 2     # Strength III
     SPEED:
-      duration: 300
-      amplifier: 2
+      duration: 300    # 15s
+      amplifier: 2     # Speed III
     BLINDNESS:
-      duration: 300
-      amplifier: 0
+      duration: 300    # 15s
+      amplifier: 0     # Blindness I

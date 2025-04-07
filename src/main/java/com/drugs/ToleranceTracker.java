@@ -7,13 +7,14 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 /**
- * Tracks drug tolerance per player per drug, including overdose logic.
+ * Tracks tolerance and overdose behavior for players.
  */
 public class ToleranceTracker {
 
     private static final Map<UUID, Map<String, Integer>> toleranceLevels = new HashMap<>();
     private static final Map<UUID, Map<String, Long>> lastUseTimestamps = new HashMap<>();
     private static final Map<UUID, Map<String, Integer>> overdoseAttempts = new HashMap<>();
+    private static final Set<String> cleanSlateProgress = new HashSet<>();
 
     public static void onDrugUse(Player player, String drugId) {
         UUID uuid = player.getUniqueId();
@@ -26,6 +27,27 @@ public class ToleranceTracker {
         }
 
         updateLastUse(player, drugId);
+
+        // Track that they reached max tolerance for Clean Slate later
+        if (current + 1 >= max) {
+            cleanSlateProgress.add(uuid + ":" + drugId.toLowerCase());
+        }
+
+        // Achievement: I Can Stop Anytime – max tolerance on 3+ drugs
+        int maxedDrugs = 0;
+        Map<String, Integer> playerTolerances = toleranceLevels.getOrDefault(uuid, Collections.emptyMap());
+
+        for (Map.Entry<String, Integer> entry : playerTolerances.entrySet()) {
+            int tolLevel = entry.getValue();
+            int tolMax = ToleranceConfigLoader.getMaxTolerance(entry.getKey());
+            if (tolLevel >= tolMax) {
+                maxedDrugs++;
+            }
+        }
+
+        if (maxedDrugs >= 3) {
+            AchievementManager.grant(player, AchievementManager.DrugAchievement.MAXED_THREE);
+        }
     }
 
     public static int getToleranceLevel(Player player, String drugId) {
@@ -71,8 +93,16 @@ public class ToleranceTracker {
                         long decayMillis = decayMinutes * 60_000L;
 
                         if (now - lastUsed >= decayMillis) {
-                            playerTolerance.put(drugId, level - 1);
-                            updateLastUse(player, drugId); // reset timer
+                            int newLevel = level - 1;
+                            playerTolerance.put(drugId, newLevel);
+                            updateLastUse(player, drugId); // restart timer
+
+                            // Grant Clean Slate if it decays from max to 0
+                            String key = uuid + ":" + drugId.toLowerCase();
+                            if (newLevel == 0 && cleanSlateProgress.contains(key)) {
+                                cleanSlateProgress.remove(key);
+                                AchievementManager.grant(player, AchievementManager.DrugAchievement.CLEAN_SLATE);
+                            }
                         }
                     }
                 }
@@ -94,5 +124,20 @@ public class ToleranceTracker {
     public static void resetOverdoseCount(Player player, String drugId) {
         overdoseAttempts.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
                 .put(drugId.toLowerCase(), 0);
+    }
+
+    public static void resetAllTolerance(Player player) {
+        toleranceLevels.remove(player.getUniqueId());
+        lastUseTimestamps.remove(player.getUniqueId());
+        overdoseAttempts.remove(player.getUniqueId());
+    }
+
+    public static boolean isAtMaxTolerance(UUID playerId, String drugId) {
+        int current = toleranceLevels
+                .getOrDefault(playerId, Collections.emptyMap())
+                .getOrDefault(drugId.toLowerCase(), 0);
+
+        int max = ToleranceConfigLoader.getMaxTolerance(drugId);
+        return current >= max;
     }
 }

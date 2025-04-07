@@ -1,5 +1,6 @@
 package com.drugs;
 
+import org.bukkit.GameMode;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -7,32 +8,67 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
 
-/**
- * Handles player interactions with drug items.
- * Applies effects when right-clicking with a recognized drug in hand.
- */
+import java.util.HashSet;
+import java.util.Set;
+
 public class DrugUseListener implements Listener {
 
     @EventHandler
     public void onDrugUse(PlayerInteractEvent event) {
-        // Only listen for right-click in main hand
         if (event.getHand() != EquipmentSlot.HAND) return;
 
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
-        // Try to match the held item to a registered drug
         DrugEffectProfile profile = DrugRegistry.getProfileFromItem(item);
         if (profile == null) return;
 
-        // Cancel the interaction so default behavior (eating, placing) doesn’t trigger
         event.setCancelled(true);
 
-        // Apply the drug's configured effects
+        // ----------------------------------------
+        // ✅ Achievement: First Dose
+        // ----------------------------------------
+        AchievementManager.grant(player, AchievementManager.DrugAchievement.FIRST_DOSE);
+
+        // ----------------------------------------
+        // ✅ Achievement: Chem Connoisseur
+        // ----------------------------------------
+        String drugId = DrugRegistry.getRegisteredDrugNames().stream()
+                .filter(id -> DrugRegistry.getProfileById(id).matches(item))
+                .findFirst()
+                .orElse(null);
+
+        if (drugId != null) {
+            PlayerAchievementData data = new PlayerAchievementData(player.getUniqueId());
+            String perDrugKey = "connoisseur-used-" + drugId;
+
+            if (!data.hasAchievement(perDrugKey)) {
+                data.grantAchievement(perDrugKey);
+
+                Set<String> required = new HashSet<>();
+                for (String id : DrugRegistry.getRegisteredDrugNames()) {
+                    required.add("connoisseur-used-" + id);
+                }
+
+                if (data.getUnlockedAchievements().containsAll(required)) {
+                    AchievementManager.grant(player, AchievementManager.DrugAchievement.CONNOISSEUR);
+                }
+            }
+        }
+
+        // ----------------------------------------
+        // ✅ Achievement: Risky Business
+        // ----------------------------------------
+        if (drugId != null && ToleranceTracker.isAtMaxTolerance(player.getUniqueId(), drugId)) {
+            AchievementManager.grant(player, AchievementManager.DrugAchievement.RISKY_BUSINESS);
+        }
+
+        // ----------------------------------------
+        // 🧪 Apply effects
+        // ----------------------------------------
         profile.applyEffects(player);
 
-        // Reduce item count by 1 if not in creative mode
-        if (player.getGameMode() != org.bukkit.GameMode.CREATIVE) {
+        if (player.getGameMode() != GameMode.CREATIVE) {
             int newAmount = item.getAmount() - 1;
             if (newAmount <= 0) {
                 player.getInventory().setItemInMainHand(null);

@@ -6,8 +6,81 @@ heroin:
   ingredients:
     S: SUGAR
     G: GUNPOWDER
-    A: APPLE
+    A: GOLDEN_APPLE
     B: BONE
+
+opium:
+  shape:
+    - " P "
+    - "SGS"
+    - " B "
+  ingredients:
+    P: POPPY
+    S: SUGAR
+    G: GUNPOWDER
+    B: BONE
+
+fent:
+  shape:
+    - " G "
+    - "GHG"
+    - " R "
+  ingredients:
+    G: GOLD_NUGGET
+    H: GHAST_TEAR
+    R: REDSTONE
+
+morphine:
+  shape:
+    - " N "
+    - "FEF"
+    - " N "
+  ingredients:
+    N: NETHER_WART
+    F: FERMENTED_SPIDER_EYE
+    E: IRON_NUGGET
+
+shroomshake:
+  shape:
+    - " M "
+    - "SBS"
+    - " M "
+  ingredients:
+    M: RED_MUSHROOM
+    S: SUGAR
+    B: BLAZE_POWDER
+
+blue_crystal:
+  shape:
+    - " L "
+    - "SBS"
+    - " L "
+  ingredients:
+    L: LAPIS_LAZULI
+    S: SUGAR
+    B: BLAZE_POWDER
+
+cryozen:
+  shape:
+    - " I "
+    - "SWS"
+    - " R "
+  ingredients:
+    I: BLUE_ICE
+    S: SUGAR
+    W: SNOWBALL
+    R: REDSTONE
+
+shadowspike:
+  shape:
+    - " I "
+    - "SBS"
+    - " F "
+  ingredients:
+    I: INK_SAC
+    S: SUGAR
+    B: BONE
+    F: FERMENTED_SPIDER_EYE
 
 henbane:
   shape:
