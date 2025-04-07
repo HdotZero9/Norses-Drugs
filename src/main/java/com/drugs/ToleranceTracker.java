@@ -7,7 +7,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import java.util.*;
 
 /**
- * Tracks drug tolerance per player per drug, including overdose logic.
+ * Tracks tolerance and overdose behavior for players.
  */
 public class ToleranceTracker {
 
@@ -72,7 +72,7 @@ public class ToleranceTracker {
 
                         if (now - lastUsed >= decayMillis) {
                             playerTolerance.put(drugId, level - 1);
-                            updateLastUse(player, drugId); // reset timer
+                            updateLastUse(player, drugId); // restart timer
                         }
                     }
                 }
@@ -94,5 +94,11 @@ public class ToleranceTracker {
     public static void resetOverdoseCount(Player player, String drugId) {
         overdoseAttempts.computeIfAbsent(player.getUniqueId(), k -> new HashMap<>())
                 .put(drugId.toLowerCase(), 0);
+    }
+
+    public static void resetAllTolerance(Player player) {
+        toleranceLevels.remove(player.getUniqueId());
+        lastUseTimestamps.remove(player.getUniqueId());
+        overdoseAttempts.remove(player.getUniqueId());
     }
 }

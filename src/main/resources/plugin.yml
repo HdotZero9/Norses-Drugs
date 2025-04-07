@@ -5,8 +5,8 @@ api-version: '1.21'
 
 commands:
   drugs:
-    description: Opens the drug selection GUI or gives a drug to a player.
-    usage: /drugs [give <player> <drugId> [amount]]
+    description: Opens the drug selection GUI or runs admin commands
+    usage: /drugs [give/help/purge/reload/list]
     permission: drugs.menu
 
   tolerance:
@@ -26,3 +26,15 @@ permissions:
   drugs.tolerance:
     description: Allows using /tolerance
     default: true
+
+  drugs.admin.reload:
+    description: Allows reloading all configs
+    default: op
+
+  drugs.admin.purge:
+    description: Allows purging a player’s tolerance
+    default: op
+
+  drugs.admin.list:
+    description: Allows viewing the registered drug list
+    default: op
