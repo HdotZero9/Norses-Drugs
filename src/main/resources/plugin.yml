@@ -38,3 +38,8 @@ permissions:
   drugs.admin.list:
     description: Allows viewing the registered drug list
     default: op
+
+  drugs.achievements:
+    description: Allows access to /drugs achievements
+    default: true
+

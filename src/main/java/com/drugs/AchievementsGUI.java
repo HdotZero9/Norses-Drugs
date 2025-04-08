@@ -4,21 +4,25 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.event.inventory.InventoryType;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.*;
 
-public class AchievementsGUI {
+public class AchievementsGUI implements Listener {
+
+    private static final String GUI_TITLE = ChatColor.DARK_GREEN + "Drug Achievements";
 
     public static void open(Player player) {
         List<AchievementManager.DrugAchievement> allAchievements = AchievementManager.DrugAchievement.getAll();
         Set<String> unlocked = AchievementManager.getUnlocked(player);
 
-        int size = 9; // We'll keep it 1 row (9 slots) for now
-        Inventory gui = Bukkit.createInventory(null, size, ChatColor.DARK_GREEN + "Drug Achievements");
+        int size = 9; // 1 row for now
+        Inventory gui = Bukkit.createInventory(null, size, GUI_TITLE);
 
         for (int i = 0; i < allAchievements.size(); i++) {
             AchievementManager.DrugAchievement ach = allAchievements.get(i);
@@ -41,5 +45,14 @@ public class AchievementsGUI {
         }
 
         player.openInventory(gui);
+    }
+
+    @EventHandler
+    public void onInventoryClick(InventoryClickEvent event) {
+        if (!(event.getWhoClicked() instanceof Player player)) return;
+
+        if (event.getView().getTitle().equals(GUI_TITLE)) {
+            event.setCancelled(true); // Prevent item stealing
+        }
     }
 }
