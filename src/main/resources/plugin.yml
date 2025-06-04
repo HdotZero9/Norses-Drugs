@@ -6,7 +6,7 @@ api-version: '1.21'
 commands:
   drugs:
     description: Opens the drug selection GUI or runs admin commands
-    usage: /drugs [give/help/purge/reload/list]
+    usage: /drugs [give/help/purge/reload/list/achievements]
     permission: drugs.menu
 
   tolerance:
@@ -32,7 +32,7 @@ permissions:
     default: op
 
   drugs.admin.purge:
-    description: Allows purging a player’s tolerance
+    description: Allows purging a player's tolerance
     default: op
 
   drugs.admin.list:
@@ -42,4 +42,12 @@ permissions:
   drugs.achievements:
     description: Allows access to /drugs achievements
     default: true
+    
+  drugs.admin.achievements:
+    description: Allows toggling and managing the achievement system
+    default: op
+    
+  drugs.admin.overdose:
+    description: Allows managing overdose settings and effects
+    default: op
 

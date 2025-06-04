@@ -1,0 +1,39 @@
+# Achievement System Settings
+enabled: true  # Set to false to disable the entire achievement system
+
+# Achievement unlock notification settings
+notifications:
+  chat_message: true  # Show chat message on unlock
+  sound: true         # Play sound on unlock
+  fireworks: true     # Show fireworks on unlock
+
+# Achievement Messages - Customize these to your liking
+messages:
+  unlock_prefix: "&6[Drugs] &aAchievement Unlocked: "
+  
+# Individual achievement settings
+achievements:
+  first-dose:
+    enabled: true
+    title: "&aFirst Dose"
+    description: "&7Use your first drug"
+    
+  connoisseur:
+    enabled: true
+    title: "&bChem Connoisseur"
+    description: "&7Try every drug at least once"
+    
+  risky:
+    enabled: true
+    title: "&6Risky Business"
+    description: "&7Use a drug while at max tolerance"
+    
+  maxed-three:
+    enabled: true
+    title: "&dI Can Stop Anytime"
+    description: "&7Hit max tolerance on 3 drugs"
+    
+  clean-slate:
+    enabled: true
+    title: "&eClean Slate"
+    description: "&7Let a maxed drug's tolerance decay to 0" 

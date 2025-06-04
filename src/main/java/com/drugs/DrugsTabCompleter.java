@@ -6,6 +6,7 @@ import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -23,8 +24,37 @@ public class DrugsTabCompleter implements TabCompleter {
             options.add("purge");
             options.add("reload");
             options.add("achievements"); // ✅ added this!
+            
+            if (sender.hasPermission("drugs.admin.overdose")) {
+                options.add("overdose");
+            }
 
             return partialMatch(args[0], options);
+        }
+        
+        if (args.length == 2 && args[0].equalsIgnoreCase("achievements")) {
+            if (sender.hasPermission("drugs.admin.achievements")) {
+                return partialMatch(args[1], Collections.singletonList("toggle"));
+            }
+            return Collections.emptyList();
+        }
+        
+        if (args.length == 2 && args[0].equalsIgnoreCase("overdose")) {
+            if (sender.hasPermission("drugs.admin.overdose")) {
+                return partialMatch(args[1], Arrays.asList("reload", "reset"));
+            }
+            return Collections.emptyList();
+        }
+        
+        if (args.length == 3 && args[0].equalsIgnoreCase("overdose") && args[1].equalsIgnoreCase("reset")) {
+            if (sender.hasPermission("drugs.admin.overdose")) {
+                List<String> playerNames = new ArrayList<>();
+                for (Player online : sender.getServer().getOnlinePlayers()) {
+                    playerNames.add(online.getName());
+                }
+                return partialMatch(args[2], playerNames);
+            }
+            return Collections.emptyList();
         }
 
         if (args.length == 2 && args[0].equalsIgnoreCase("give")) {

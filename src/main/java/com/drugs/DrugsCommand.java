@@ -68,6 +68,13 @@ public class DrugsCommand implements CommandExecutor {
             if (sender.hasPermission("drugs.achievements")) {
                 sender.sendMessage(ChatColor.YELLOW + "/drugs achievements" + ChatColor.GRAY + " - View your achievement progress");
             }
+            if (sender.hasPermission("drugs.admin.achievements")) {
+                sender.sendMessage(ChatColor.YELLOW + "/drugs achievements toggle" + ChatColor.GRAY + " - Enable/disable the achievement system");
+            }
+            if (sender.hasPermission("drugs.admin.overdose")) {
+                sender.sendMessage(ChatColor.YELLOW + "/drugs overdose reload" + ChatColor.GRAY + " - Reload overdose configuration");
+                sender.sendMessage(ChatColor.YELLOW + "/drugs overdose reset <player>" + ChatColor.GRAY + " - Reset a player's overdose counts");
+            }
             sender.sendMessage(ChatColor.YELLOW + "/drugs help" + ChatColor.GRAY + " - Show this help menu");
             sender.sendMessage("");
             sender.sendMessage(ChatColor.DARK_RED + "⚠ Using drugs too often causes tolerance. Max tolerance = no effects!");
@@ -136,8 +143,9 @@ public class DrugsCommand implements CommandExecutor {
             }
 
             ToleranceTracker.resetAllTolerance(target);
-            sender.sendMessage(ChatColor.GREEN + "Reset all tolerance for " + target.getName());
-            target.sendMessage(ChatColor.YELLOW + "Your drug tolerance levels have been purged by an admin.");
+            OverdoseEffectManager.resetOverdoseCounts(target);
+            sender.sendMessage(ChatColor.GREEN + "Reset all tolerance and overdose counts for " + target.getName());
+            target.sendMessage(ChatColor.YELLOW + "Your drug tolerance levels and overdose counts have been purged by an admin.");
             return true;
         }
 
@@ -151,8 +159,14 @@ public class DrugsCommand implements CommandExecutor {
             DrugsV2.getInstance().reloadConfig();
             DrugsV2.getInstance().saveRecipesConfig();
             DrugsV2.getInstance().saveToleranceConfig();
+            DrugsV2.getInstance().saveAchievementSettingsConfig();
+            DrugsV2.getInstance().saveAchievementsConfig();
+            DrugsV2.getInstance().saveOverdoseConfig();
 
             ToleranceConfigLoader.load(DrugsV2.getInstance().getDataFolder());
+            AchievementSettingsLoader.load(DrugsV2.getInstance().getDataFolder());
+            CustomAchievementLoader.load(DrugsV2.getInstance().getDataFolder());
+            OverdoseEffectManager.load(DrugsV2.getInstance().getDataFolder());
             DrugRegistry.init(DrugsV2.getInstance());
 
             sender.sendMessage(ChatColor.GREEN + "DrugsV2 configs reloaded successfully.");
@@ -178,6 +192,62 @@ public class DrugsCommand implements CommandExecutor {
                     sender.sendMessage(ChatColor.GRAY + "  " + ChatColor.translateAlternateColorCodes('&', lore));
                 }
             }
+            return true;
+        }
+        
+        // /drugs achievements toggle
+        if (args[0].equalsIgnoreCase("achievements") && args.length > 1 && args[1].equalsIgnoreCase("toggle")) {
+            if (!sender.hasPermission("drugs.admin.achievements")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to toggle achievements.");
+                return true;
+            }
+            
+            // We'd need to modify the config file directly to toggle achievements
+            // For now, just inform the user to edit the config file
+            sender.sendMessage(ChatColor.YELLOW + "To enable/disable achievements, edit the achievement_settings.yml file");
+            sender.sendMessage(ChatColor.YELLOW + "and set 'enabled' to true or false, then use /drugs reload.");
+            return true;
+        }
+        
+        // /drugs overdose reload
+        if (args[0].equalsIgnoreCase("overdose")) {
+            if (!sender.hasPermission("drugs.admin.overdose")) {
+                sender.sendMessage(ChatColor.RED + "You do not have permission to manage overdose settings.");
+                return true;
+            }
+            
+            if (args.length < 2) {
+                sender.sendMessage(ChatColor.RED + "Usage: /drugs overdose [reload/reset]");
+                return true;
+            }
+            
+            // /drugs overdose reload
+            if (args[1].equalsIgnoreCase("reload")) {
+                OverdoseEffectManager.load(DrugsV2.getInstance().getDataFolder());
+                sender.sendMessage(ChatColor.GREEN + "Overdose configuration reloaded successfully.");
+                return true;
+            }
+            
+            // /drugs overdose reset <player>
+            if (args[1].equalsIgnoreCase("reset")) {
+                if (args.length < 3) {
+                    sender.sendMessage(ChatColor.RED + "Usage: /drugs overdose reset <player>");
+                    return true;
+                }
+                
+                Player target = Bukkit.getPlayer(args[2]);
+                if (target == null) {
+                    sender.sendMessage(ChatColor.RED + "Player not found or not online.");
+                    return true;
+                }
+                
+                OverdoseEffectManager.resetOverdoseCounts(target);
+                sender.sendMessage(ChatColor.GREEN + "Reset all overdose counts for " + target.getName());
+                target.sendMessage(ChatColor.YELLOW + "Your overdose counts have been reset by an admin.");
+                return true;
+            }
+            
+            sender.sendMessage(ChatColor.RED + "Unknown overdose subcommand. Try reload or reset.");
             return true;
         }
 

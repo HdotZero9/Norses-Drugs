@@ -29,9 +29,22 @@ public class DrugsV2 extends JavaPlugin {
         saveDefaultConfig();
         saveRecipesConfig();
         saveToleranceConfig();
+        saveAchievementSettingsConfig();
+        saveAchievementsConfig();
+        saveOverdoseConfig();
 
+        // Initialize performance optimizer first
+        PerformanceOptimizer.initialize();
+        
         // Load tolerance settings
         ToleranceConfigLoader.load(getDataFolder());
+        
+        // Load achievement settings and achievements
+        AchievementSettingsLoader.load(getDataFolder());
+        CustomAchievementLoader.load(getDataFolder());
+        
+        // Load overdose effect settings
+        OverdoseEffectManager.load(getDataFolder());
 
         // Initialize core drug system
         DrugRegistry.init(this);
@@ -43,7 +56,6 @@ public class DrugsV2 extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DrugMenuListener(), this);
         getServer().getPluginManager().registerEvents(new DrugUseListener(), this);
         Bukkit.getPluginManager().registerEvents(new AchievementsGUI(), DrugsV2.getInstance());
-
 
         // Register commands
         getCommand("drugs").setExecutor(new DrugsCommand());
@@ -72,6 +84,30 @@ public class DrugsV2 extends JavaPlugin {
         File file = new File(getDataFolder(), "tolerance.yml");
         if (!file.exists()) {
             saveResource("tolerance.yml", false);
+        }
+    }
+    
+    public void saveAchievementSettingsConfig() {
+        File file = new File(getDataFolder(), "achievement_settings.yml");
+        if (!file.exists()) {
+            saveResource("achievement_settings.yml", false);
+        }
+    }
+    
+    public void saveAchievementsConfig() {
+        File file = new File(getDataFolder(), "achievements.yml");
+        if (!file.exists()) {
+            saveResource("achievements.yml", false);
+        }
+    }
+
+    /**
+     * Saves the overdose config file
+     */
+    public void saveOverdoseConfig() {
+        File file = new File(getDataFolder(), "overdose.yml");
+        if (!file.exists()) {
+            saveResource("overdose.yml", false);
         }
     }
 

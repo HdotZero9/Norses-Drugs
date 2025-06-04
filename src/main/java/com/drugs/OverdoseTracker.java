@@ -5,6 +5,7 @@ import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class OverdoseTracker {
@@ -17,12 +18,16 @@ public class OverdoseTracker {
         }
 
         int count = ToleranceTracker.incrementOverdoseCount(player, drugId);
-
-        if (count >= 3) {
+        
+        // Process overdose with the new effect manager
+        boolean shouldDie = OverdoseEffectManager.processOverdose(player, drugId, count);
+        
+        // If no custom effects were applied and the manager says to kill the player
+        if (shouldDie) {
             // Grant achievement BEFORE killing
-
-            // Broadcast overdose death
-            Bukkit.broadcastMessage(ChatColor.RED + player.getName() + " died of a drug overdose.");
+            Map<String, Object> context = AchievementManager.createContext();
+            context.put("drug_id", drugId);
+            AchievementManager.processTrigger(player, "overdose_death", context);
 
             // Delay actual death to ensure everything completes
             new BukkitRunnable() {
@@ -31,7 +36,7 @@ public class OverdoseTracker {
                     player.setHealth(0);
                 }
             }.runTaskLater(DrugsV2.getInstance(), 1L);
-        } else {
+        } else if (count < 3) {
             player.sendMessage(ChatColor.RED + "You're too tolerant to feel anything...");
         }
     }

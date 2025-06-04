@@ -1,24 +1,101 @@
+# Achievement definitions
+# Each achievement needs:
+#   - title: Display name (supports color codes with &)
+#   - description: Description text (supports color codes)
+#   - trigger: What triggers this achievement
+#   - icon: Material to show when locked
+#   - completed_icon: Material to show when unlocked
+#
+# Available triggers:
+#   - first_drug_use: Triggered when a player uses any drug for the first time
+#   - all_drugs_used: Triggered when a player has used every registered drug at least once
+#   - use_at_max: Triggered when a player uses a drug while at max tolerance
+#   - maxed_three: Triggered when a player hits max tolerance on 3 different drugs
+#   - decay_full: Triggered when a maxed drug's tolerance decays all the way back to 0
+#   - use_specific_drug: Triggered when a player uses a specific drug (requires drug_id parameter)
+#   - craft_drug: Triggered when a player crafts any drug
+#   - craft_specific: Triggered when a player crafts a specific drug (requires drug_id parameter)
+#   - overdose_survive: Triggered when a player survives an overdose
+#   - use_count: Triggered when a player uses drugs a certain number of times (requires count parameter)
+
+# Default achievements
 first-dose:
   title: "&aFirst Dose"
   description: "&7Use your first drug"
   trigger: "first_drug_use"
+  icon: "GRAY_DYE"
+  completed_icon: "BOOK"
 
 connoisseur:
   title: "&bChem Connoisseur"
   description: "&7Try every drug at least once"
   trigger: "all_drugs_used"
+  icon: "GRAY_DYE"
+  completed_icon: "KNOWLEDGE_BOOK"
 
 risky:
   title: "&6Risky Business"
   description: "&7Use a drug while at max tolerance"
   trigger: "use_at_max"
+  icon: "GRAY_DYE"
+  completed_icon: "REDSTONE"
 
 maxed-three:
   title: "&dI Can Stop Anytime"
   description: "&7Hit max tolerance on 3 drugs"
   trigger: "maxed_three"
+  icon: "GRAY_DYE"
+  completed_icon: "DIAMOND"
 
 clean-slate:
   title: "&eClean Slate"
   description: "&7Let a maxed drug's tolerance decay to 0"
   trigger: "decay_full"
+  icon: "GRAY_DYE"
+  completed_icon: "PAPER"
+
+# Example custom achievements (uncomment and modify as needed)
+#crystal-chef:
+#  title: "&9Crystal Chef"
+#  description: "&7Craft Blue Crystal for the first time"
+#  trigger: "craft_specific"
+#  drug_id: "blue_crystal"
+#  icon: "LAPIS_LAZULI"
+#  completed_icon: "LAPIS_BLOCK"
+#
+#drug-addict:
+#  title: "&4Drug Addict"
+#  description: "&7Use drugs 100 times"
+#  trigger: "use_count"
+#  count: 100
+#  icon: "BONE_MEAL"
+#  completed_icon: "NETHER_STAR"
+
+# Overdose-related achievements
+overdose_death:
+  title: "Flatline"
+  description: "Die from a drug overdose"
+  icon: "REDSTONE"
+  trigger: "overdose_death"
+  hidden: false
+  notification:
+    chat: true
+    sound: "ENTITY_WITHER_DEATH"
+    firework: false
+  conditions:
+    - "drug_id != null"
+
+overdose_survive:
+  title: "Close Call"
+  description: "Survive an overdose attempt"
+  icon: "GOLDEN_APPLE"
+  trigger: "overdose_survive"
+  hidden: false
+  notification:
+    chat: true
+    sound: "ENTITY_PLAYER_LEVELUP"
+    firework: false
+  conditions:
+    - "drug_id != null"
+    - "attempt > 0"
+    - "attempt < 3"
