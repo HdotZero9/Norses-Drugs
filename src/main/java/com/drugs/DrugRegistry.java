@@ -92,7 +92,11 @@ public class DrugRegistry {
      * Retrieves a profile by internal drug ID.
      */
     public static DrugEffectProfile getProfileById(String id) {
-        return id == null ? null : drugProfiles.get(id.toLowerCase());
+        return drugProfiles.get(id.toLowerCase());
+    }
+
+    public static boolean isDrugRegistered(String id) {
+        return drugProfiles.containsKey(id.toLowerCase());
     }
 
     /**
@@ -114,9 +118,12 @@ public class DrugRegistry {
         // Generate a cache key based on item properties
         int cacheKey = generateItemCacheKey(item);
         
+        // Skip cache for invalid keys (0 indicates invalid/null item)
+        if (cacheKey == 0) return null;
+        
         // Check cache first
         DrugEffectProfile cachedProfile = itemMatchCache.get(cacheKey);
-        if (cachedProfile != null) {
+        if (cachedProfile != null || itemMatchCache.containsKey(cacheKey)) {
             return cachedProfile;
         }
         
@@ -135,8 +142,9 @@ public class DrugRegistry {
             }
         }
         
-        // Cache negative result to avoid repeated lookups
-        itemMatchCache.put(cacheKey, null);
+        // For negative results, we'll use containsKey to indicate we checked
+        // but don't store null values to avoid ConcurrentHashMap limitations
+        itemMatchCache.put(cacheKey, DrugEffectProfile.NONE);
         return null;
     }
     

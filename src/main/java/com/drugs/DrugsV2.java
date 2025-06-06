@@ -62,6 +62,12 @@ public class DrugsV2 extends JavaPlugin {
         getCommand("drugs").setTabCompleter(new DrugsTabCompleter());
         getCommand("tolerance").setExecutor(new ToleranceCommand());
 
+        // Register PlaceholderAPI expansion if available
+        if (Bukkit.getPluginManager().getPlugin("PlaceholderAPI") != null) {
+            new DrugsPlaceholderExpansion(this).register();
+            getLogger().info("PlaceholderAPI expansion registered successfully!");
+        }
+
         getLogger().info("DrugsV2 enabled!");
     }
 

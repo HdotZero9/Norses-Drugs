@@ -18,7 +18,12 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DrugEffectProfile {
 
-    private final String name;
+    /**
+     * Sentinel value used to indicate a negative cache result
+     */
+    public static final DrugEffectProfile NONE = new DrugEffectProfile("none", new ArrayList<>(), Material.AIR, "", new ArrayList<>());
+
+    private final String id;
     private final List<PotionEffect> effects;
     private final Material material;
     private final String displayName;
@@ -29,8 +34,8 @@ public class DrugEffectProfile {
     private final ItemStack cachedItem;
     private final List<String> formattedLore;
 
-    public DrugEffectProfile(String name, List<PotionEffect> effects, Material material, String displayName, List<String> lore) {
-        this.name = name;
+    public DrugEffectProfile(String id, List<PotionEffect> effects, Material material, String displayName, List<String> lore) {
+        this.id = id;
         this.effects = new CopyOnWriteArrayList<>(effects); // Thread-safe list
         this.material = material;
         this.displayName = displayName;
@@ -54,16 +59,16 @@ public class DrugEffectProfile {
      * Applies the drug effects to the player, scaling with tolerance.
      */
     public void applyEffects(Player player) {
-        int toleranceLevel = ToleranceTracker.getToleranceLevel(player, name);
-        int max = ToleranceConfigLoader.getMaxTolerance(name);
-        double multiplier = ToleranceTracker.getEffectivenessMultiplier(player, name);
+        int toleranceLevel = ToleranceTracker.getToleranceLevel(player, id);
+        int max = ToleranceConfigLoader.getMaxTolerance(id);
+        double multiplier = ToleranceTracker.getEffectivenessMultiplier(player, id);
 
         // Maxed tolerance logic
         if (toleranceLevel >= max) {
-            ToleranceTracker.onDrugUse(player, name); // consume, track use
+            ToleranceTracker.onDrugUse(player, id); // consume, track use
 
-            int overdoseCount = ToleranceTracker.incrementOverdoseCount(player, name);
-            boolean shouldDie = OverdoseEffectManager.processOverdose(player, name, overdoseCount);
+            int overdoseCount = ToleranceTracker.incrementOverdoseCount(player, id);
+            boolean shouldDie = OverdoseEffectManager.processOverdose(player, id, overdoseCount);
             
             if (shouldDie) {
                 // Let the overdose manager handle the death effects
@@ -92,7 +97,7 @@ public class DrugEffectProfile {
             }
         }
 
-        ToleranceTracker.onDrugUse(player, name);
+        ToleranceTracker.onDrugUse(player, id);
     }
 
     /**
@@ -136,8 +141,8 @@ public class DrugEffectProfile {
         return itemName.equalsIgnoreCase(strippedDisplayName);
     }
 
-    public String getName() {
-        return name;
+    public String getId() {
+        return id;
     }
 
     public List<PotionEffect> getEffects() {

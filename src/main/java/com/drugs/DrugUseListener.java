@@ -20,15 +20,17 @@ public class DrugUseListener implements Listener {
 
     @EventHandler
     public void onDrugUse(PlayerInteractEvent event) {
-        if (event.getHand() != EquipmentSlot.HAND) return;
+        // Only handle right-click interactions for drug use
+        if (event.getHand() != EquipmentSlot.HAND || !event.getAction().isRightClick()) return;
 
         Player player = event.getPlayer();
         ItemStack item = player.getInventory().getItemInMainHand();
 
+        // Skip if item is null or air
+        if (item == null || item.getType().isAir()) return;
+
         DrugEffectProfile profile = DrugRegistry.getProfileFromItem(item);
         if (profile == null) return;
-
-        event.setCancelled(true);
 
         // Get the drug ID
         String drugId = DrugRegistry.getRegisteredDrugNames().stream()
@@ -37,6 +39,9 @@ public class DrugUseListener implements Listener {
                 .orElse(null);
 
         if (drugId == null) return;
+
+        // Only cancel the event if we've confirmed this is a valid drug use
+        event.setCancelled(true);
 
         // ----------------------------------------
         // Track drug use count for achievements

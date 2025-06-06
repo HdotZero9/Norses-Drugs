@@ -51,7 +51,7 @@ public class DrugMenuListener implements Listener {
             default -> {
                 DrugEffectProfile profile = DrugRegistry.getProfileFromItem(clicked);
                 if (profile != null) {
-                    DrugRecipeViewer.openRecipe(player, profile.getName());
+                    DrugRecipeViewer.openRecipe(player, profile.getId());
                 }
             }
         }

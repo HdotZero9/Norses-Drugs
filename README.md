@@ -13,6 +13,7 @@ Norse's Drugs is a powerful, modular Minecraft plugin that adds craftable, confi
 - **NEW!** Fully customizable achievement system with multilingual support
 - **NEW!** Create your own custom achievements with different triggers and rewards
 - **NEW!** Configurable overdose effects with drug-specific consequences
+- **NEW!** PlaceholderAPI support for displaying drug tolerances and effectiveness
 
 ## 🧪 Default Drugs Included
 - **Heroin** – Strength & Speed
@@ -157,11 +158,17 @@ Edit the files in `/plugins/DrugsV2/`:
 - `achievements.yml` – define custom achievements and triggers
 - `overdose.yml` – configure overdose effects and behavior
 
+## 📘 Documentation
+- [`DRUG_TEMPLATE.md`](./DRUG_TEMPLATE.md) - Learn how to add your own drugs
+- [`OVERDOSE_EFFECTS.md`](./OVERDOSE_EFFECTS.md) - Configure overdose effects
+- [`PLACEHOLDER_USAGE.md`](./PLACEHOLDER_USAGE.md) - PlaceholderAPI integration guide
+
 ## 📘 Add Your Own Drugs
 See [`DRUG_TEMPLATE.md`](./DRUG_TEMPLATE.md)
 
 ## ✅ Supports:
 - Minecraft 1.21+
 - Paper, Spigot
+- PlaceholderAPI
 
 Enjoy 😉
